@@ -1,6 +1,6 @@
 use color_eyre::eyre::{bail, eyre};
 use color_eyre::Result;
-use junit_report::{Duration, TestCase, TestCaseBuilder, TestSuite, OffsetDateTime};
+use junit_report::{Duration, OffsetDateTime, TestCase, TestCaseBuilder, TestSuite};
 use regex::Regex;
 use std::io::{BufRead, Result as IoResult, Write};
 use std::iter::Peekable;
@@ -152,6 +152,15 @@ fn main() -> Result<()> {
                 builder.set_classname(&hook_id);
             }
             testcase = Some(builder.build());
+        } else if line == "pre-commit hook(s) made changes." {
+            // Collect this and remaining lines into a generic stdout for the whole testsuite
+            let mut system_out = line;
+            system_out.push('\n');
+            for line in &mut stdin {
+                system_out.push_str(&line?);
+                system_out.push('\n');
+            }
+            testsuite.set_system_out(&system_out);
         } else {
             // Does not match start of new
             test_stdout.push_str(&line);
