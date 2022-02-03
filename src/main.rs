@@ -29,6 +29,19 @@ fn main() -> Result<()> {
         testsuite.set_timestamp(OffsetDateTime::UNIX_EPOCH);
     }
 
+    let testcase_result = Regex::new(
+        r"(?x)
+        ^ # Start of line
+        (?P<name>.+?) # Hook name
+        (?:\.+) # A variable list of `.` for alignment
+        (?P<reason>\(no\ files\ to\ check\))? # Optional reason why the hook was skipped
+        (?:\x1b\[[0-9;]+m) # Optional color argument
+        (?P<status>Passed|Failed|Skipped|Skipped) # Hook status
+        (?:\x1b\[m)? # Optional color reset
+        $ # End of line
+        ",
+    )?;
+
     // Iterate over each line
     let mut stdin = stdin
         .lines()
@@ -42,19 +55,6 @@ fn main() -> Result<()> {
     let mut test_stdout = String::new();
     while let Some(line) = stdin.next() {
         let line = line?;
-
-        let testcase_result = Regex::new(
-            r"(?x)
-            ^ # Start of line
-            (?P<name>.+?) # Hook name
-            (?:\.+) # A variable list of `.` for alignment
-            (?P<reason>\(no\ files\ to\ check\))? # Optional reason why the hook was skipped
-            (?:\x1b\[[0-9;]+m) # Optional color argument
-            (?P<status>Passed|Failed|Skipped|Skipped) # Hook status
-            (?:\x1b\[m)? # Optional color reset
-            $ # End of line
-            ",
-        )?;
         if let Some(result) = testcase_result.captures(&line) {
             if let Some(mut testcase) = testcase.take() {
                 testcase.set_system_out(&test_stdout);
