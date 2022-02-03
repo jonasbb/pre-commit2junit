@@ -35,8 +35,8 @@ fn main() -> Result<()> {
         (?P<name>.+?) # Hook name
         (?:\.+) # A variable list of `.` for alignment
         (?P<reason>\(no\ files\ to\ check\))? # Optional reason why the hook was skipped
-        (?:\x1b\[[0-9;]+m) # Optional color argument
-        (?P<status>Passed|Failed|Skipped|Skipped) # Hook status
+        (?:\x1b\[[0-9;]+m)? # Optional color argument
+        (?P<status>Passed|Failed|Skipped) # Hook status
         (?:\x1b\[m)? # Optional color reset
         $ # End of line
         ",
