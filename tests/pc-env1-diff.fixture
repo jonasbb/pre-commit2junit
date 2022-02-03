@@ -1,0 +1,32 @@
+Hook which always passes.................................................[42mPassed[m
+[2m- hook id: passing[m
+[2m- duration: 0s[m
+
+success
+
+Hook which always fails..................................................[41mFailed[m
+[2m- hook id: failing[m
+[2m- duration: 0s[m
+[2m- exit code: 1[m
+Slow hook for duration...................................................[42mPassed[m
+[2m- hook id: slow[m
+[2m- duration: 1.4s[m
+Hook does not run because no files...................(no files to check)[46;30mSkipped[m
+[2m- hook id: missing-files[m
+Hook skipped by environment.............................................[43;30mSkipped[m
+[2m- hook id: skipped[m
+Modifies files...........................................................[41mFailed[m
+[2m- hook id: modifies[m
+[2m- duration: 0s[m
+[2m- files were modified by this hook[m
+pre-commit hook(s) made changes.
+If you are seeing this message in CI, reproduce locally with: `pre-commit run --all-files`.
+To run `pre-commit` as part of git workflow, use `pre-commit install`.
+All changes made by hooks:
+[1mdiff --git a/tests/pc-env1/changing_file.txt b/tests/pc-env1/changing_file.txt[m
+[1mindex e61ef7b..5d308e1 100644[m
+[1m--- a/tests/pc-env1/changing_file.txt[m
+[1m+++ b/tests/pc-env1/changing_file.txt[m
+[36m@@ -1 +1 @@[m
+[31m-aa[m
+[32m+[m[32maaaa[m
