@@ -1,0 +1,44 @@
+use assert_cmd::Command;
+use pretty_assertions::assert_str_eq;
+
+/// Test conversion of `pc-env1.fixture`
+///
+/// Create the fixture with `env SKIP=skipped pre-commit run --all-files --verbose`
+#[test]
+fn test_convert_fixture() {
+    let mut cmd = Command::cargo_bin("pre-commit2junit").unwrap();
+    let assert = cmd
+        .arg("/dev/fd/1")
+        .env("CI", "true")
+        .write_stdin(include_str!("./pc-env1.fixture"))
+        .assert();
+    let assert = assert.success();
+    let output = assert.get_output();
+    let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+  <testsuite id="0" name="pre-commit" package="testsuite/pre-commit" tests="6" errors="2" failures="0" hostname="localhost" timestamp="1970-01-01T00:00:00Z" time="1.399999999">
+    <testcase name="Hook which always passes" classname="passing" time="0">
+      <system-out><![CDATA[
+success
+
+]]></system-out>
+    </testcase>
+    <testcase name="Hook which always fails" classname="failing" time="0">
+      <error type="Exit Code" message="1"><![CDATA[]]></error>
+    </testcase>
+    <testcase name="Slow hook for duration" classname="slow" time="1.399999999">
+      <system-out><![CDATA[]]></system-out>
+    </testcase>
+    <testcase name="Hook does not run because no files" classname="missing-files" time="0">
+      <skipped />
+    </testcase>
+    <testcase name="Hook skipped by environment" classname="skipped" time="0">
+      <skipped />
+    </testcase>
+    <testcase name="Modifies files" classname="modifies" time="0">
+      <error type="Modified Files" message=""><![CDATA[]]></error>
+    </testcase>
+  </testsuite>
+</testsuites>"#;
+assert_str_eq!(expected, std::str::from_utf8(&output.stdout).unwrap());
+}

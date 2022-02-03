@@ -1,0 +1,37 @@
+repos:
+  - repo: local
+    hooks:
+      - id: "passing"
+        name: "Hook which always passes"
+        always_run: true
+        language: "system"
+        entry: "echo success"
+        pass_filenames: false
+      - id: "failing"
+        name: "Hook which always fails"
+        always_run: true
+        language: "system"
+        entry: "false"
+        pass_filenames: false
+      - id: "slow"
+        name: "Slow hook for duration"
+        always_run: true
+        language: "system"
+        entry: "sleep 1.4"
+        pass_filenames: false
+      - id: "missing-files"
+        name: "Hook does not run because no files"
+        files: "does-not-exist"
+        language: "system"
+        entry: "false"
+        pass_filenames: false
+      - id: "skipped"
+        name: "Hook skipped by environment"
+        language: "system"
+        entry: "false"
+        pass_filenames: false
+      - id: "modifies"
+        name: "Modifies files"
+        files: \.txt$
+        language: "system"
+        entry: "sed -i 's/\\(aaa\\)\\?a/aa/g'"
