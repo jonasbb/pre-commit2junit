@@ -1,0 +1,65 @@
+name: Rust CI
+on:
+  push:
+    branches-ignore:
+      - "dependabot/**"
+      - "pre-commit-ci-update-config"
+  pull_request:
+  # Run every Saturday night
+  schedule:
+    - cron: "0 4 * * 6"
+
+jobs:
+  clippy_check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        rust: ["stable"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: clippy
+
+      - name: clippy (${{ matrix.os }} / ${{ matrix.rust }})
+        run: cargo clippy
+          --quiet
+          --workspace
+          --all-features
+          --all-targets
+
+  rustfmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt
+      - name: Rustfmt Check
+        run: cargo fmt --all -- --check
+
+  build_and_test:
+    name: Build and Test
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        rust: ["stable", "nightly"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+
+      # The tests are split into build and run steps, to see the time impact of each
+      # cargo test --all-targets does NOT run doctests
+      # since doctests are important this should not be added
+      # https://github.com/rust-lang/cargo/issues/6669
+      - name: "Test Build (${{ matrix.os }} / ${{ matrix.rust }})"
+        run: cargo test --all-features  --no-run
+      - name: "Test Run (${{ matrix.os }} / ${{ matrix.rust }})"
+        run: cargo test --all-features --no-fail-fast
