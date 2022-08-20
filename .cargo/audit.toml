@@ -1,0 +1,15 @@
+[advisories]
+ignore = [
+    # xml-rs is unmaintained
+    # Inactionable, as this is a transitive dependency of junit-report.
+    "RUSTSEC-2022-0048",
+    # ansi_term is Unmaintained
+    # Inactionable, as this is a transitive dependency of pretty_assertions.
+    # It is only used in test code.
+    "RUSTSEC-2021-0139",
+]
+# warn for categories of informational advisories
+informational_warnings = [
+    "unmaintained",
+    "unsound",
+]

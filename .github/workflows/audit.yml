@@ -28,6 +28,3 @@ jobs:
         name: Audit Rust Dependencies
         with:
           denyWarnings: "true"
-          # RUSTSEC-2022-0048 xml-rs is unmaintained
-          # Inactionable, as this is a transitive dependency of junit-report.
-          ignore: RUSTSEC-2022-0048
