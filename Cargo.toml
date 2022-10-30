@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 color-eyre = "0.6.0"
-junit-report = "0.7.0"
+junit-report = "0.8.1"
 regex = "1.5.4"
 
 [dev-dependencies]
