@@ -47,7 +47,7 @@ fn main() -> Result<()> {
         .lines()
         .map(|line| {
             line.and_then(|line| {
-                writeln!(stderr, "{}", line)?;
+                writeln!(stderr, "{line}")?;
                 Ok(line)
             })
         })
@@ -136,7 +136,7 @@ fn main() -> Result<()> {
 
                     if let Some(exit_code) = exit_code {
                         type_ = String::from("Exit Code");
-                        msg = format!("{}", exit_code);
+                        msg = format!("{exit_code}");
                     } else if modifies_files {
                         type_ = String::from("Modified Files");
                     } else {
